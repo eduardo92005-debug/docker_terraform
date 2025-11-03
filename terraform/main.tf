@@ -53,3 +53,17 @@ module "frontend" {
     docker = docker.local
   }
 }
+
+
+module "reverse_proxy" {
+  source          = "./modules/nginx"
+  project_name    = "teste"
+  nginx_conf_path = "${path.module}/../nginx/nginx.conf"
+  public_network  = module.network.public_network_name
+  private_network = module.network.private_network_name
+  external_port   = 8080
+
+  providers = {
+    docker = docker.local
+  }
+}
