@@ -11,7 +11,7 @@ resource "docker_container" "backend" {
   name  = "${var.project_name}-backend"
   image = docker_image.backend.name
 
-  env_file = [var.env_file]
+  env = var.env_vars
 
   networks_advanced {
     name    = var.private_network

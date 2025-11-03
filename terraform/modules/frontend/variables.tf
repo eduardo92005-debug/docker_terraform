@@ -2,4 +2,7 @@ variable "project_name" {}
 variable "image_name" {}
 variable "context_path" {}
 variable "public_network" {}
-variable "env_file" {}
+variable "env_vars" {
+  description = "Lista de variáveis de ambiente no formato KEY=VALUE"
+  type        = list(string)
+}

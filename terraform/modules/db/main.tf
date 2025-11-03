@@ -11,7 +11,7 @@ resource "docker_container" "db" {
   name  = "${var.project_name}-db"
   image = docker_image.postgres.name
 
-  env_file = [var.env_file]
+  env = var.env_vars
 
   mounts {
     target = "/var/lib/postgresql/data"
