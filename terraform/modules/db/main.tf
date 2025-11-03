@@ -22,7 +22,7 @@ resource "docker_container" "db" {
   mounts {
     target = "/docker-entrypoint-initdb.d/init.sql"
     type   = "bind"
-    source = "${var.init_sql_path}"
+    source = abspath(var.init_sql_path)
     read_only = true
   }
 
