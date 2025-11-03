@@ -40,3 +40,16 @@ module "backend" {
 
   depends_on = [module.database]
 }
+
+module "frontend" {
+  source         = "./modules/frontend"
+  project_name   = "teste"
+  image_name     = "local/frontend:dev"
+  context_path   = "${path.module}/../frontend"
+  public_network = module.network.public_network_name
+#   labels         = local.common_labels
+
+  providers = {
+    docker = docker.local
+  }
+}
