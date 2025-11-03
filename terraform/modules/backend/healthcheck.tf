@@ -3,20 +3,36 @@ data "docker_logs" "backend" {
   name            = docker_container.backend.name
   show_stdout     = true
   show_stderr     = true
-  tail            = "100"
   discard_headers = true
+  logs_list_string_enabled = true
+  details = true
+}
+
+resource "time_sleep" "wait_for_backend_logs" {
+  depends_on      = [docker_container.backend]
+  create_duration = "10s"
 }
 
 resource "null_resource" "verify_backend_log" {
-  depends_on = [data.docker_logs.backend]
+  depends_on = [data.docker_logs.backend, time_sleep.wait_for_backend_logs]
 
   lifecycle {
     postcondition {
-      condition     = can(regex("(?i)error", join("\n", data.docker_logs.backend.logs_list_string)))
+      condition = (
+        length(data.docker_logs.backend.logs_list_string) == 0 ||
+        !can(regex("(?i)error", join("\n", data.docker_logs.backend.logs_list_string)))
+      )
       error_message = "Backend container apresentou erros nos logs."
     }
   }
 }
+
+# resource "local_file" "backend_logs_dump" {
+#   depends_on = [data.docker_logs.backend, time_sleep.wait_for_backend_logs]
+#   content    = join("\n", data.docker_logs.backend.logs_list_string)
+#   filename   = "${path.module}/backend.logs.txt"
+# }
+
 
 
 
