@@ -11,9 +11,7 @@ resource "docker_container" "frontend" {
   name  = "${var.project_name}-frontend"
   image = docker_image.frontend.name
 
-  env = [
-    "PUBLIC_API_BASE=/api"
-  ]
+  env_file = [var.env_file]
 
   networks_advanced {
     name    = var.public_network

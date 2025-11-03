@@ -7,3 +7,4 @@ variable "db_user" {}
 variable "db_password" { sensitive = true }
 variable "db_name" {}
 variable "private_network" {}
+variable "env_file" {}
