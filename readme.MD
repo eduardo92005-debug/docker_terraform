@@ -77,56 +77,15 @@ project-root/
 
 ## 🚀 Como subir o projeto (passo a passo completo)
 
-### 🧩 Estrutura esperada antes de iniciar
-
-Certifique-se de que seu diretório do projeto esteja organizado da seguinte forma:
-
-```
-project-root/
-├── backend/
-│   ├── Dockerfile
-│   ├── index.js
-│   ├── package.json
-│   └── .env.production
-├── frontend/
-│   ├── Dockerfile
-│   ├── index.html
-│   ├── .env.production
-│   └── nginx.conf
-├── db/
-│   ├── script.sql
-│   └── .env.production
-├── terraform/
-│   ├── main.tf
-│   ├── variables.tf
-│   ├── example.tfvars
-│   ├── terraform.tfvars
-│   └── modules/
-│       ├── network/
-│       ├── db/
-│       ├── backend/
-│       ├── frontend/
-│       ├── nginx/
-│       └── observability/
-└── Makefile
-```
-
-
----
-
 ### ⚙️ Criar o arquivo de variáveis do Terraform
 
-Na pasta `terraform/`, você encontrará o arquivo `example.tfvars`.  
-Esse arquivo é **um modelo** contendo todas as variáveis necessárias para o Terraform.
-
-Crie o arquivo real chamado `terraform.tfvars` na mesma pasta com base nele:
+Na pasta `terraform/`, copie o arquivo de exemplo e edite os valores:
 
 ```bash
 cp terraform/example.tfvars terraform/terraform.tfvars
 ```
 
-Abra o arquivo `terraform.tfvars` e defina os valores conforme o ambiente local.  
-Um exemplo ideal seria:
+**Exemplo ideal de `terraform.tfvars`:**
 
 ```hcl
 project_name = "desafio-local"
@@ -146,15 +105,11 @@ nginx_conf_file = "../frontend/nginx.conf"
 proxy_port      = 8080
 ```
 
-💡 **Importante:**
-- Os caminhos (`../backend/.env.production`, etc.) são relativos à pasta `terraform/`.
-- O Terraform usará essas variáveis para repassar os arquivos `.env` para cada container.
-
 ---
 
 ### 🧱 Criar os arquivos `.env` de cada serviço
 
-Cada aplicação (backend, frontend e banco) precisa de seu próprio `.env.production`.
+Cada aplicação (backend, frontend e banco) precisa de seu próprio `.env.production`:
 
 **Backend (`backend/.env.production`):**
 ```bash
@@ -193,45 +148,54 @@ PORT=8080
 HOST=0.0.0.0
 ```
 
-### 🧠 Inicializar o Terraform
+---
 
+## 🧰 Funcionalidades do Makefile
+
+O projeto é controlado completamente por comandos `make`:
+
+| Comando | Descrição |
+|----------|------------|
+| `make init` | Inicializa o Terraform (módulos, providers e validações). |
+| `make validate` | Valida a sintaxe e formatação dos arquivos Terraform. |
+| `make up` | Executa o `terraform apply` e sobe toda a infraestrutura local. |
+| `make ps` | Mostra todos os containers ativos. |
+| `make logs-all` | Mostra os logs combinados de todos os containers. |
+| `make logs-proxy` | Exibe logs do container Nginx. |
+| `make logs-backend` | Exibe logs do container backend. |
+| `make logs-frontend` | Exibe logs do container frontend. |
+| `make logs-db` | Exibe logs do container do banco de dados. |
+| `make scan-backend` | Executa um scan de segurança no backend (npm audit ou trivy). |
+| `make scan-frontend` | Executa um scan de segurança no frontend. |
+| `make scan-db` | Executa um scan de segurança no db. |
+| `make scan-all` | Executa todos os scans de segurança de uma vez. |
+| `make health` | Realiza healthcheck dos containers (testa portas e respostas HTTP). |
+| `make down` | Destroi toda a infraestrutura (`terraform destroy -auto-approve`). |
+| `make clean` | Limpa completamente o ambiente (remove state, volumes e imagens locais). |
+
+---
+
+## 🧠 Subindo o ambiente
+
+Execute:
 ```bash
 make up
 ```
 
-O comando `make up` executa internamente:
-
-```bash
-terraform apply -auto-approve
-```
-
-Ele:
+O comando `make up` executa internamente `terraform apply -auto-approve`, e:
 - Cria as redes (`public` e `private`);
 - Sobe o banco de dados e aplica o `init.sql`;
 - Sobe o backend e conecta ao banco;
-- Sobe o frontend;
-- Sobe o proxy reverso (Nginx);
-- Configura observabilidade (Dozzle + cAdvisor);
-- Exibe o status dos containers ao final.
+- Sobe o frontend e o proxy reverso;
+- Configura observabilidade (Dozzle + cAdvisor).
 
 ---
 
-### Validar se tudo está rodando
+## 🔍 Validando o ambiente
 
 Verifique os containers ativos:
 ```bash
 make ps
-```
-
-Saída esperada:
-```
-🐋 Containers em execução:
-desafio-local-proxy      Up   0.0.0.0:8080->8080/tcp
-desafio-local-backend    Up   (healthy)
-desafio-local-db         Up
-desafio-local-frontend   Up
-desafio-local-dozzle     Up   0.0.0.0:8086->8080/tcp
-desafio-local-cadvisor   Up   0.0.0.0:8085->8080/tcp
 ```
 
 Acesse:
@@ -242,28 +206,19 @@ Acesse:
 
 ---
 
-### 🔻 Destruir o ambiente
+## 🔻 Destruir o ambiente
 
 ```bash
 make down
 ```
 
-Isso executa `terraform destroy -auto-approve`  
-e remove todas as redes, volumes e containers criados.
-
 ---
 
-### 🔄 Resetar completamente (limpeza total)
+## 🧼 Limpeza completa
 
 ```bash
 make clean
 ```
-
-Isso remove:
-- estado Terraform (`terraform.tfstate`);
-- volumes Docker persistentes;
-- imagens locais;
-- caches temporários.
 
 ---
 

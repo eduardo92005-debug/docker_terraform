@@ -50,15 +50,19 @@ logs-backend:
 	@echo "Logs do backend:"
 	docker logs -f $(PROJECT_NAME)-backend
 
+logs-db:
+	@echo "Logs do backend:"
+	docker logs -f $(PROJECT_NAME)-db
+
 # Exibe os logs do frontend (Nginx estático)
-logs-frontend:
-	@echo "Logs do frontend:"
-	docker logs -f $(PROJECT_NAME)-frontend
+# logs-frontend:
+# 	@echo "Logs do frontend:"
+# 	docker logs -f $(PROJECT_NAME)-frontend
 
 # Exibe todos os logs
 logs-all:
 	@echo "Logs de todos os containers:"
-	docker logs -f $(PROJECT_NAME)-proxy & docker logs -f $(PROJECT_NAME)-backend & docker logs -f $(PROJECT_NAME)-frontend
+	docker logs -f $(PROJECT_NAME)-proxy & docker logs -f $(PROJECT_NAME)-backend
 
 # Mostra o status dos containers
 ps:
@@ -85,13 +89,13 @@ scan-frontend:
 	@echo "Rodando análise de segurança no frontend..."
 	docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image local/frontend:dev || true
 
-# Escaneia imagem do proxy
-scan-proxy:
-	@echo "Rodando análise de segurança no proxy..."
-	docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image local/nginx:dev || true
+# Escaneia imagem do db
+scan-db:
+	@echo "Rodando análise de segurança no frontend..."
+	docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image postgres:15.8 || true
 
 # Escaneia todas as imagens
-scan-all: scan-backend scan-frontend scan-proxy
+scan-all: scan-backend scan-frontend
 	@echo "Todos os scans finalizados!"
 
 help:
@@ -105,13 +109,13 @@ help:
 	@echo "  make logs-proxy      → Mostra logs do Nginx (proxy)"
 	@echo "  make logs-backend    → Mostra logs do backend"
 	@echo "  make logs-frontend   → Mostra logs do frontend"
+	@echo "  make logs-db         → Mostra logs do db"
 	@echo "  make logs-all        → Mostra logs de todos os containers"
 	@echo "  make ps              → Lista containers do projeto"
 	@echo "  make health          → Checa status dos containers"
 	@echo "  make clean           → Remove estados e cache"
 	@echo "  make scan-backend    → Executa scan de segurança no backend"
 	@echo "  make scan-frontend   → Executa scan de segurança no frontend"
-	@echo "  make scan-proxy      → Executa scan de segurança no proxy"
 	@echo "  make scan-all        → Executa todos os scans de segurança"
 	@echo ""
 
