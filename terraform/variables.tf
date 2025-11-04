@@ -14,8 +14,8 @@ variable "env_file_backend" {
   type        = string
 
   validation {
-    condition     = length(var.env_file_backend) > 0 && can(regex("\\.env$", var.env_file_backend))
-    error_message = "O caminho do arquivo .env do backend deve ser válido e terminar com .env."
+    condition     = length(var.env_file_backend) > 0 && can(regex(".*\\.env.*", var.env_file_backend))
+    error_message = "O caminho do arquivo do backend deve conter '.env' no nome."
   }
 }
 
@@ -24,8 +24,8 @@ variable "env_file_database" {
   type        = string
 
   validation {
-    condition     = length(var.env_file_database) > 0 && can(regex("\\.env$", var.env_file_database))
-    error_message = "O caminho do arquivo .env do banco deve ser válido e terminar com .env."
+    condition     = length(var.env_file_database) > 0 && can(regex(".*\\.env.*", var.env_file_database))
+    error_message = "O caminho do arquivo do banco deve conter '.env' no nome."
   }
 }
 
@@ -34,8 +34,8 @@ variable "env_file_frontend" {
   type        = string
 
   validation {
-    condition     = length(var.env_file_frontend) > 0 && can(regex("\\.env$", var.env_file_frontend))
-    error_message = "O caminho do arquivo .env do frontend deve ser válido e terminar com .env."
+    condition     = length(var.env_file_frontend) > 0 && can(regex(".*\\.env.*", var.env_file_frontend))
+    error_message = "O caminho do arquivo do frontend deve conter '.env' no nome."
   }
 }
 

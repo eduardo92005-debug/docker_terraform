@@ -45,7 +45,7 @@ module "backend" {
 #   context_path   = "${path.module}/../frontend"
 #   public_network = module.network.public_network_name
 #   env_vars       = local.env_frontend
-#   run_proxy_healthcheck = false
+#   run_healthcheck = false
 
 #   providers = {
 #     docker = docker.local
