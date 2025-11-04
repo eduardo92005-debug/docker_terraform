@@ -65,12 +65,11 @@ project-root/
 ├── frontend/
 │   ├── index.html
 │   ├── Dockerfile
+│   ├── nginx.conf
 │   └── .env               # Variáveis de ambiente específicas do frontend
 ├── db/
 │   ├── script.sql
 │   └── .env               # Variáveis de ambiente específicas do banco de dados
-├── nginx.conf
-├── .env.example
 └── Makefile
 ```
 
@@ -265,3 +264,4 @@ Este projeto demonstra:
 
 Este projeto foi desenvolvido apenas para fins de avaliação técnica.  
 Todos os componentes utilizados são **open source** e executam **localmente, sem custos de cloud**.
+
