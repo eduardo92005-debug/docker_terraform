@@ -7,7 +7,8 @@ const {
   DB_HOST: host,
   DB_PORT: db_port,
   DB_NAME: db_name,
-  PORT
+  PORT,
+
 } = process.env;
 
 const port = Number(PORT) || 8080;
@@ -19,33 +20,41 @@ const client = new PG.Client(
 let successfulConnection = false;
 
 client.connect()
-      .then(() => { successfulConnection = true })
-      .catch(err => console.error('Database not connected -', err.stack));
+  .then(() => { successfulConnection = true })
+  .catch(err => {
+    if (process.env.ENVIRONMENT !== 'production') {
+      console.error('Database not connected -', err.stack);
+    }
+  });
 
 http.createServer(async (req, res) => {
-  console.log(`Request: ${req.url}`);
-  
-  if (req.url === "/api") {
-    res.setHeader("Content-Type", "application/json");
-    res.writeHead(200);
+  if (process.env.ENVIRONMENT !== 'production') {
+    console.log(`Request: ${req.url}`);
+  }
 
-    let result;
+  try {
+    if (req.url === "/api") {
+      res.setHeader("Content-Type", "application/json");
+      res.writeHead(200);
 
-    try {
-      result = (await client.query("SELECT * FROM users")).rows[0];
-    } catch (error) {
-      console.error(error)
+      const result = (await client.query("SELECT * FROM users")).rows[0] || {};
+
+      const data = {
+        database: successfulConnection,
+        userAdmin: result?.role === "admin"
+      };
+
+      res.end(JSON.stringify(data));
+    } else {
+      res.writeHead(404);
+      res.end();
     }
-
-    const data = {
-      database: successfulConnection,
-      userAdmin: result?.role === "admin"
+  } catch (error) {
+    if (process.env.ENVIRONMENT !== 'production') {
+      console.error('Unhandled error:', error);
     }
-
-    res.end(JSON.stringify(data));
-  } else {
-    res.writeHead(503);
-    res.end("Internal Server Error");
+    res.writeHead(500);
+    res.end();
   }
 
 }).listen(port, () => {

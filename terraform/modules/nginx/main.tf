@@ -3,6 +3,9 @@ resource "docker_image" "nginx" {
   build {
     context    = var.context_path
     dockerfile = "Dockerfile"
+    build_args = {
+      CONFIG_HASH = filesha256(var.nginx_conf_path)
+    }
   }
   keep_locally = true
 }
@@ -35,4 +38,5 @@ resource "docker_container" "proxy" {
 
   restart  = "unless-stopped"
   must_run = true
+
 }
