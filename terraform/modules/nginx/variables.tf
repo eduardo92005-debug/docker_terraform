@@ -5,3 +5,4 @@ variable "private_network" {}
 variable "external_port" {}
 variable "image_name" {}
 variable "context_path" {}
+variable "run_healthcheck" {}

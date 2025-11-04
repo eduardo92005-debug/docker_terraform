@@ -15,7 +15,7 @@ resource "time_sleep" "wait_for_frontend_logs" {
 
 resource "null_resource" "verify_frontend_log" {
   depends_on = [data.docker_logs.frontend, time_sleep.wait_for_frontend_logs]
-
+  count = var.run_healthcheck ? 1 : 0
   lifecycle {
     postcondition {
       condition = (

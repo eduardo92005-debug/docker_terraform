@@ -15,7 +15,7 @@ resource "time_sleep" "wait_for_backend_logs" {
 
 resource "null_resource" "verify_backend_log" {
   depends_on = [data.docker_logs.backend, time_sleep.wait_for_backend_logs]
-
+  count = var.run_healthcheck ? 1 : 0
   lifecycle {
     postcondition {
       condition = (

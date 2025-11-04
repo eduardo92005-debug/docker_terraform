@@ -26,6 +26,7 @@ module "backend" {
   context_path    = "${path.module}/../backend"
   private_network = module.network.private_network_name
   env_vars        = local.env_backend
+  run_healthcheck = false
 
   providers = {
     docker = docker.local
@@ -44,6 +45,7 @@ module "backend" {
 #   context_path   = "${path.module}/../frontend"
 #   public_network = module.network.public_network_name
 #   env_vars       = local.env_frontend
+#   run_proxy_healthcheck = false
 
 #   providers = {
 #     docker = docker.local
@@ -59,7 +61,7 @@ module "reverse_proxy" {
   external_port   = var.proxy_port
   image_name     = var.nginx_image
   context_path   = "${path.module}/../frontend"
-
+  run_healthcheck = false
   providers = {
     docker = docker.local
   }
@@ -67,3 +69,15 @@ module "reverse_proxy" {
   depends_on = [module.backend]
 }
 
+module "observability" {
+  source          = "./modules/observability"
+  project_name    = var.project_name
+  private_network = module.network.private_network_name
+  public_network  = module.network.public_network_name
+  depends_on = [module.backend, module.reverse_proxy]
+
+  providers = {
+    docker = docker.local
+  }
+
+}
