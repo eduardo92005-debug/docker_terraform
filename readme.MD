@@ -65,12 +65,11 @@ project-root/
 ├── frontend/
 │   ├── index.html
 │   ├── Dockerfile
-│   └── .env.production
+│   ├── .env.production
+│   └── nginx.conf
 ├── db/
 │   ├── script.sql
 │   └── .env.production
-├── nginx.conf
-├── .env.example
 └── Makefile
 ```
 
@@ -92,7 +91,8 @@ project-root/
 ├── frontend/
 │   ├── Dockerfile
 │   ├── index.html
-│   └── .env.production
+│   ├── .env.production
+│   └── nginx.conf
 ├── db/
 │   ├── script.sql
 │   └── .env.production
