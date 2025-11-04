@@ -9,7 +9,7 @@ init_sql_file = "../db/script.sql"
 
 backend_image  = "local/backend:dev"
 frontend_image = "local/frontend:dev"
-nginx_image = "local/nginx:dev"
+nginx_image    = "local/nginx:dev"
 
 # Proxy reverso
 nginx_conf_file = "../frontend/nginx.conf"

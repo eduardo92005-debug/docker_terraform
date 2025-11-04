@@ -31,7 +31,7 @@ resource "docker_container" "cadvisor" {
     aliases = ["cadvisor"]
   }
   networks_advanced {
-    name = var.public_network
+    name    = var.public_network
     aliases = ["cadvisor"]
   }
 
@@ -60,7 +60,7 @@ resource "docker_container" "dozzle" {
   }
 
   networks_advanced {
-    name = var.public_network
+    name    = var.public_network
     aliases = ["dozzle"]
   }
 

@@ -12,7 +12,7 @@ check:
 		exit 1; \
 	fi
 	@if ! docker info >/dev/null 2>&1; then \
-		echo "Docker não está em execução. Inicie o serviço com: sudo systemctl start docker"; \
+		echo "Docker não está em execução."; \
 		exit 1; \
 	fi
 	@echo "Pré-requisitos OK! Terraform e Docker estão disponíveis."
@@ -27,7 +27,7 @@ validate:
 	cd $(TF_DIR) && terraform fmt -recursive && terraform validate
 
 # Sobe toda a infraestrutura local com rollback em caso de erro
-up: check validate
+up: init check validate
 	@echo "Criando ambiente Docker local..."
 	cd $(TF_DIR) && terraform apply -auto-approve || ( \
 		echo "Erro detectado durante o apply! Iniciando rollback..." && \

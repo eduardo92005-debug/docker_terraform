@@ -3,7 +3,7 @@ resource "docker_volume" "pgdata" {
 }
 
 resource "docker_image" "postgres" {
-  name = "postgres:15.8"
+  name         = "postgres:15.8"
   keep_locally = true
 }
 
@@ -20,9 +20,9 @@ resource "docker_container" "db" {
   }
 
   mounts {
-    target = "/docker-entrypoint-initdb.d/init.sql"
-    type   = "bind"
-    source = abspath(var.init_sql_path)
+    target    = "/docker-entrypoint-initdb.d/init.sql"
+    type      = "bind"
+    source    = abspath(var.init_sql_path)
     read_only = true
   }
 
@@ -31,6 +31,6 @@ resource "docker_container" "db" {
     aliases = ["postgres"]
   }
 
-  restart   = "unless-stopped"
-  must_run  = true
+  restart  = "unless-stopped"
+  must_run = true
 }

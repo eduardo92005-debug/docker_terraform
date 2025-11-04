@@ -1,11 +1,11 @@
 data "docker_logs" "backend" {
-  depends_on      = [docker_container.backend]
-  name            = docker_container.backend.name
-  show_stdout     = true
-  show_stderr     = true
-  discard_headers = true
+  depends_on               = [docker_container.backend]
+  name                     = docker_container.backend.name
+  show_stdout              = true
+  show_stderr              = true
+  discard_headers          = true
   logs_list_string_enabled = true
-  details = true
+  details                  = true
 }
 
 resource "time_sleep" "wait_for_backend_logs" {
@@ -15,7 +15,7 @@ resource "time_sleep" "wait_for_backend_logs" {
 
 resource "null_resource" "verify_backend_log" {
   depends_on = [data.docker_logs.backend, time_sleep.wait_for_backend_logs]
-  count = var.run_healthcheck ? 1 : 0
+  count      = var.run_healthcheck ? 1 : 0
   lifecycle {
     postcondition {
       condition = (

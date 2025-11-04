@@ -123,23 +123,9 @@ Crie o arquivo `terraform.tfvars` na mesma pasta e ajuste conforme necessário.
 
 ### 1️⃣ Pré-requisitos
 
-Antes de iniciar, certifique-se de ter instalado:
-
-- **Docker** ≥ 20.10  
-- **Terraform** ≥ 1.5  
-- **GNU Make**
-
-Em sistemas Linux:
-```bash
-sudo apt install docker.io terraform make -y
-```
-
-Verifique:
-```bash
-docker --version
-terraform --version
-make --version
-```
+- [Docker](https://docs.docker.com/get-docker/)
+- [Terraform](https://developer.hashicorp.com/terraform/downloads)
+- [GNU Make](https://www.gnu.org/software/make/)
 
 ---
 

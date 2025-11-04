@@ -12,9 +12,9 @@ resource "docker_container" "proxy" {
   image = docker_image.nginx.name
 
   mounts {
-    type   = "bind"
-    target = "/etc/nginx/nginx.conf"
-    source = abspath(var.nginx_conf_path)
+    type      = "bind"
+    target    = "/etc/nginx/nginx.conf"
+    source    = abspath(var.nginx_conf_path)
     read_only = true
   }
 

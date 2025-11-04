@@ -59,8 +59,8 @@ module "reverse_proxy" {
   public_network  = module.network.public_network_name
   private_network = module.network.private_network_name
   external_port   = var.proxy_port
-  image_name     = var.nginx_image
-  context_path   = "${path.module}/../frontend"
+  image_name      = var.nginx_image
+  context_path    = "${path.module}/../frontend"
   run_healthcheck = false
   providers = {
     docker = docker.local
@@ -74,7 +74,7 @@ module "observability" {
   project_name    = var.project_name
   private_network = module.network.private_network_name
   public_network  = module.network.public_network_name
-  depends_on = [module.backend, module.reverse_proxy]
+  depends_on      = [module.backend, module.reverse_proxy]
 
   providers = {
     docker = docker.local
