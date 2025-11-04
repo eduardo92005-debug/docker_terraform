@@ -226,3 +226,5 @@ make clean
 
 Este projeto foi desenvolvido apenas para fins de avaliação técnica.  
 Todos os componentes utilizados são **open source** e executam **localmente, sem custos de cloud**.
+
+
