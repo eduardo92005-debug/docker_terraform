@@ -77,7 +77,7 @@ project-root/
 
 ## 🚀 Como subir o projeto (passo a passo completo)
 
-### 🧩 1️⃣ Estrutura esperada antes de iniciar
+### 🧩 Estrutura esperada antes de iniciar
 
 Certifique-se de que seu diretório do projeto esteja organizado da seguinte forma:
 
@@ -111,9 +111,10 @@ project-root/
 └── Makefile
 ```
 
+
 ---
 
-### ⚙️ 2️⃣ Criar o arquivo de variáveis do Terraform
+### ⚙️ Criar o arquivo de variáveis do Terraform
 
 Na pasta `terraform/`, você encontrará o arquivo `example.tfvars`.  
 Esse arquivo é **um modelo** contendo todas as variáveis necessárias para o Terraform.
@@ -151,7 +152,7 @@ proxy_port      = 8080
 
 ---
 
-### 🧱 3️⃣ Criar os arquivos `.env` de cada serviço
+### 🧱 Criar os arquivos `.env` de cada serviço
 
 Cada aplicação (backend, frontend e banco) precisa de seu próprio `.env.production`.
 
@@ -192,7 +193,7 @@ PORT=8080
 HOST=0.0.0.0
 ```
 
-### 🧠 4️⃣ Inicializar o Terraform
+### 🧠 Inicializar o Terraform
 
 ```bash
 make up
@@ -215,7 +216,7 @@ Ele:
 
 ---
 
-### 🧾 6️⃣ Validar se tudo está rodando
+### Validar se tudo está rodando
 
 Verifique os containers ativos:
 ```bash
@@ -241,7 +242,7 @@ Acesse:
 
 ---
 
-### 🔻 7️⃣ Destruir o ambiente
+### 🔻 Destruir o ambiente
 
 ```bash
 make down
@@ -252,7 +253,7 @@ e remove todas as redes, volumes e containers criados.
 
 ---
 
-### 🔄 8️⃣ Resetar completamente (limpeza total)
+### 🔄 Resetar completamente (limpeza total)
 
 ```bash
 make clean
