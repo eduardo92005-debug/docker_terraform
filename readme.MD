@@ -40,6 +40,25 @@ Além disso, o ambiente inclui ferramentas leves de **observabilidade**:
 
 ---
 
+## 🧰 Requisitos necessários
+
+Antes de rodar o projeto, é necessário ter as seguintes ferramentas instaladas no sistema:
+
+| Ferramenta | Versão mínima | Link para instalação |
+|-------------|----------------|----------------------|
+| **Docker** | 20.10+ | [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker) |
+| **Terraform** | 1.5+ | [https://developer.hashicorp.com/terraform/downloads](https://developer.hashicorp.com/terraform/downloads) |
+| **GNU Make** | 4.0+ | [https://www.gnu.org/software/make/](https://www.gnu.org/software/make/) |
+
+Para verificar se as ferramentas estão instaladas corretamente, execute:
+```bash
+docker --version
+terraform --version
+make --version
+```
+
+---
+
 ## 🧩 Estrutura do projeto
 
 ```text
@@ -77,107 +96,28 @@ project-root/
 
 ## 🚀 Como subir o projeto (passo a passo completo)
 
-### ⚙️ Criar o arquivo de variáveis do Terraform
-
-Na pasta `terraform/`, copie o arquivo de exemplo e edite os valores:
-
-```bash
-cp terraform/example.tfvars terraform/terraform.tfvars
-```
-
-**Exemplo ideal de `terraform.tfvars`:**
-
-```hcl
-project_name = "desafio-local"
-
-env_file_backend  = "../backend/.env.production"
-env_file_database = "../db/.env.production"
-env_file_frontend = "../frontend/.env.production"
-
-init_sql_file = "../db/script.sql"
-
-backend_image  = "local/backend:dev"
-frontend_image = "local/frontend:dev"
-nginx_image    = "local/nginx:dev"
-
-# Proxy reverso
-nginx_conf_file = "../frontend/nginx.conf"
-proxy_port      = 8080
-```
+Agora, todo o processo de configuração inicial é automatizado com o comando `make env-init`, que prepara os arquivos `.env.production` e o `terraform.tfvars`.
 
 ---
 
-### 🧱 Criar os arquivos `.env` de cada serviço
+### 🧩 Passo 1️⃣ — Preparar os arquivos de ambiente e variáveis
 
-Cada aplicação (backend, frontend e banco) precisa de seu próprio `.env.production`:
+Execute o comando abaixo para gerar os arquivos necessários automaticamente:
 
-**Backend (`backend/.env.production`):**
 ```bash
-PROJECT_NAME=desafio-local
-ENVIRONMENT=local
-DB_HOST=postgres
-DB_PORT=5432
-DB_NAME=appdb
-DB_USER=appuser
-DB_PASSWORD=changeme123
-PORT=8080
-HOST=0.0.0.0
+make env-init
 ```
 
-**Frontend (`frontend/.env.production`):**
-```bash
-PROJECT_NAME=desafio-local
-ENVIRONMENT=local
-PROXY_PORT=8080
-PUBLIC_API_BASE=/api
-```
-
-**Banco (`db/.env.production`):**
-```bash
-PROJECT_NAME=desafio-local
-ENVIRONMENT=local
-POSTGRES_DB=appdb
-POSTGRES_USER=appuser
-POSTGRES_PASSWORD=changeme123
-DB_HOST=postgres
-DB_PORT=5432
-DB_NAME=appdb
-DB_USER=appuser
-DB_PASSWORD=changeme123
-PORT=8080
-HOST=0.0.0.0
-```
+Este comando faz:
+- Cria `backend/.env.production`, `frontend/.env.production` e `db/.env.production` caso ainda não existam (baseados em `.env.example` se disponível).
+- Cria `terraform/terraform.tfvars` com base em `terraform/example.tfvars` caso ainda não exista.
 
 ---
 
-## 🧰 Funcionalidades do Makefile
+### ⚙️ Passo 2️⃣ — Subir a infraestrutura
 
-O projeto é controlado completamente por comandos `make`:
+Depois que os arquivos foram gerados, suba o ambiente com:
 
-| Comando | Descrição |
-|----------|------------|
-| `make init` | Inicializa o Terraform (módulos, providers e validações). |
-| `make validate` | Valida a sintaxe e formatação dos arquivos Terraform. |
-| `make up` | Executa o `terraform apply` e sobe toda a infraestrutura local. |
-| `make ps` | Mostra todos os containers ativos. |
-| `make logs-all` | Mostra os logs combinados de todos os containers. |
-| `make logs-proxy` | Exibe logs do container Nginx. |
-| `make logs-backend` | Exibe logs do container backend. |
-| `make logs-frontend` | Exibe logs do container frontend. |
-| `make logs-db` | Exibe logs do container do banco de dados. |
-| `make scan-backend` | Executa um scan de segurança no backend (npm audit ou trivy). |
-| `make scan-frontend` | Executa um scan de segurança no frontend. |
-| `make scan-db` | Executa um scan de segurança no db. |
-| `make scan-all` | Executa todos os scans de segurança de uma vez. |
-| `make health` | Realiza healthcheck dos containers (testa portas e respostas HTTP). |
-| `make down` | Destroi toda a infraestrutura (`terraform destroy -auto-approve`). |
-| `make clean` | Limpa completamente o ambiente (remove state, volumes e imagens locais). |
-
----
-
-## 🧠 Subindo o ambiente
-
-Execute:
 ```bash
 make up
 ```
@@ -191,9 +131,10 @@ O comando `make up` executa internamente `terraform apply -auto-approve`, e:
 
 ---
 
-## 🔍 Validando o ambiente
+### 🔍 Passo 3️⃣ — Verificar se tudo está rodando
 
-Verifique os containers ativos:
+Veja os containers ativos:
+
 ```bash
 make ps
 ```
@@ -206,19 +147,50 @@ Acesse:
 
 ---
 
-## 🔻 Destruir o ambiente
+### 🧰 Passo 4️⃣ — Logs e observabilidade
+
+Comandos úteis:
+
+```bash
+make logs-proxy      # Logs do proxy reverso (Nginx)
+make logs-backend    # Logs do backend (Node.js)
+make logs-db         # Logs do banco de dados (PostgreSQL)
+make logs-all        # Mostra logs combinados de todos os serviços
+```
+
+---
+
+### 🔻 Passo 5️⃣ — Destruir o ambiente
 
 ```bash
 make down
 ```
 
+Este comando executa `terraform destroy -auto-approve`, removendo containers, volumes e redes.
+
 ---
 
-## 🧼 Limpeza completa
+### 🧼 Passo 6️⃣ — Limpeza completa
 
 ```bash
 make clean
 ```
+
+Remove arquivos temporários, cache, estados do Terraform e reconfigura o ambiente.
+
+---
+
+## 🧰 Outros comandos disponíveis
+
+| Comando | Descrição |
+|----------|------------|
+| `make init` | Inicializa o Terraform (módulos e providers). |
+| `make validate` | Valida e formata os arquivos Terraform. |
+| `make health` | Exibe status de containers e portas. |
+| `make scan-backend` | Executa scan de segurança no backend. |
+| `make scan-frontend` | Executa scan de segurança no frontend. |
+| `make scan-db` | Executa scan de segurança no banco. |
+| `make scan-all` | Executa todos os scans de segurança de uma vez. |
 
 ---
 
@@ -226,5 +198,3 @@ make clean
 
 Este projeto foi desenvolvido apenas para fins de avaliação técnica.  
 Todos os componentes utilizados são **open source** e executam **localmente, sem custos de cloud**.
-
-
