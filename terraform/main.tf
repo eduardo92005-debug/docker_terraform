@@ -34,18 +34,21 @@ module "backend" {
   depends_on = [module.database]
 }
 
-module "frontend" {
-  source         = "./modules/frontend"
-  project_name   = var.project_name
-  image_name     = var.frontend_image
-  context_path   = "${path.module}/../frontend"
-  public_network = module.network.public_network_name
-  env_vars       = local.env_frontend
+# Não precisa desse modulo a priori, visto que é só um index.html
+# Apenas o reverse proxy dá conta.
 
-  providers = {
-    docker = docker.local
-  }
-}
+# module "frontend" {
+#   source         = "./modules/frontend"
+#   project_name   = var.project_name
+#   image_name     = var.frontend_image
+#   context_path   = "${path.module}/../frontend"
+#   public_network = module.network.public_network_name
+#   env_vars       = local.env_frontend
+
+#   providers = {
+#     docker = docker.local
+#   }
+# }
 
 module "reverse_proxy" {
   source          = "./modules/nginx"
@@ -54,11 +57,13 @@ module "reverse_proxy" {
   public_network  = module.network.public_network_name
   private_network = module.network.private_network_name
   external_port   = var.proxy_port
+  image_name     = var.nginx_image
+  context_path   = "${path.module}/../frontend"
 
   providers = {
     docker = docker.local
   }
 
-  depends_on = [module.frontend, module.backend]
+  depends_on = [module.backend]
 }
 

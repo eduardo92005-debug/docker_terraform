@@ -29,6 +29,11 @@ variable "backend_image" {
   type        = string
 }
 
+variable "nginx_image" {
+  description = "Nome e tag da imagem Docker que será usada para o nginx (ex: local/nginx:dev)."
+  type        = string
+}
+
 variable "frontend_image" {
   description = "Nome e tag da imagem Docker que será usada para o frontend (ex: local/frontend:dev)."
   type        = string

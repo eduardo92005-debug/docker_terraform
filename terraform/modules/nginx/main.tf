@@ -1,5 +1,9 @@
 resource "docker_image" "nginx" {
-  name = "nginx:1.27-alpine"
+  name = var.image_name
+  build {
+    context    = var.context_path
+    dockerfile = "Dockerfile"
+  }
   keep_locally = true
 }
 
@@ -10,12 +14,12 @@ resource "docker_container" "proxy" {
   mounts {
     type   = "bind"
     target = "/etc/nginx/nginx.conf"
-    source = var.nginx_conf_path
+    source = abspath(var.nginx_conf_path)
     read_only = true
   }
 
   ports {
-    internal = 8080
+    internal = 80
     external = var.external_port
     protocol = "tcp"
   }
